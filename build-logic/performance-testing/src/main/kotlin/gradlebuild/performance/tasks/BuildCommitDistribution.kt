@@ -25,6 +25,7 @@ import org.gradle.api.file.FileSystemOperations
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.internal.GradleInternal
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
@@ -34,7 +35,6 @@ import org.gradle.caching.http.HttpBuildCache
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.process.ExecOperations
 import org.gradle.util.GradleVersion
-import org.gradle.work.DisableCachingByDefault
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
@@ -57,7 +57,7 @@ private
 val oldWrapperMissingErrorRegex = """\Qjava.io.FileNotFoundException:\E.*/distributions-snapshots/gradle-([\d.]+)""".toRegex()
 
 
-@DisableCachingByDefault(because = "Child Gradle build will do its own caching")
+@CacheableTask
 abstract class BuildCommitDistribution @Inject internal constructor(
     private val fsOps: FileSystemOperations,
     private val execOps: ExecOperations,
@@ -77,25 +77,18 @@ abstract class BuildCommitDistribution @Inject internal constructor(
 
     init {
         onlyIf { commitBaseline.getOrElse("").matches(commitVersionRegex) }
-        commitDistribution.set(project.rootProject.layout.projectDirectory.file(commitBaseline.map { "intTestHomeDir/commit-distributions/gradle-$it.zip" }))
-        commitDistributionToolingApiJar.set(project.rootProject.layout.projectDirectory.file(commitBaseline.map { "intTestHomeDir/commit-distributions/gradle-tooling-api-$it.jar" }))
     }
 
     @TaskAction
     fun buildCommitDistribution() {
-        if (commitDistribution.asFile.orNull?.isFile == true && commitDistributionToolingApiJar.asFile.orNull?.isFile == true) {
-            println("Skip building existing commit baseline distribution: ${commitDistribution.asFile.get()} ${commitDistributionToolingApiJar.asFile.get()}")
-        } else {
-            val rootProjectDir = project.repoRoot().asFile.absolutePath
-            val commit = commitBaseline.map { it.substring(it.lastIndexOf('-') + 1) }
-            val checkoutDir = RemoteProject.checkout(fsOps, execOps, rootProjectDir, commit.get(), temporaryDir)
+        val rootProjectDir = project.repoRoot().asFile.absolutePath
+        val commit = commitBaseline.map { it.substring(it.lastIndexOf('-') + 1) }
+        val checkoutDir = RemoteProject.checkout(fsOps, execOps, rootProjectDir, commit.get(), temporaryDir)
 
-            fsOps.delete { delete(commitDistribution.get().asFile) }
-            tryBuildDistribution(checkoutDir)
-            copyToFinalDestination(checkoutDir)
+        tryBuildDistribution(checkoutDir)
+        copyToFinalDestination(checkoutDir)
 
-            println("Building the commit distribution in $checkoutDir succeeded, now the baseline is ${commitBaseline.get()}")
-        }
+        println("Building the commit distribution in $checkoutDir succeeded, now the baseline is ${commitBaseline.get()}")
     }
 
     /**
@@ -127,16 +120,10 @@ abstract class BuildCommitDistribution @Inject internal constructor(
         }
     }
 
+    private
     fun copyToFinalDestination(checkoutDir: File) {
-        fsOps.copy {
-            val baseVersion = commitBaseline.get().substringBefore("-")
-            from(File(checkoutDir, "subprojects/distributions-full/build/distributions"))
-            include("gradle-$baseVersion-bin.zip")
-            into(commitDistribution.asFile.get().parentFile)
-            rename {
-                commitDistribution.asFile.get().name
-            }
-        }
+        val baseVersion = commitBaseline.get().substringBefore("-")
+        checkoutDir.resolve("subprojects/distributions-full/build/distributions/gradle-$baseVersion-bin.zip").copyTo(commitDistribution.asFile.get(), true)
     }
 
     private

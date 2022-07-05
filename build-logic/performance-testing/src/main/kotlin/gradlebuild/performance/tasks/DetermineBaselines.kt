@@ -16,9 +16,9 @@
 
 package gradlebuild.performance.tasks
 
+import gradlebuild.basics.defaultPerformanceBaselines
 import gradlebuild.basics.kotlindsl.execAndGetStdout
 import gradlebuild.identity.extension.ModuleIdentityExtension
-import gradlebuild.performance.Config
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
@@ -49,7 +49,7 @@ abstract class DetermineBaselines @Inject constructor(@get:Internal val distribu
         } else if (!currentBranchIsMasterOrRelease()) {
             determinedBaselines.set(forkPointCommitBaseline())
         } else {
-            determinedBaselines.set(Config.defaultBaseline)
+            determinedBaselines.set(project.defaultPerformanceBaselines)
         }
 
         println("Determined baseline is: ${determinedBaselines.get()}")

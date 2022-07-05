@@ -32,6 +32,7 @@ import gradlebuild.basics.BuildParams.BUILD_TIMESTAMP
 import gradlebuild.basics.BuildParams.BUILD_VCS_NUMBER
 import gradlebuild.basics.BuildParams.BUILD_VERSION_QUALIFIER
 import gradlebuild.basics.BuildParams.CI_ENVIRONMENT_VARIABLE
+import gradlebuild.basics.BuildParams.DEFAULT_PERFORMANCE_BASELINES
 import gradlebuild.basics.BuildParams.FLAKY_TEST
 import gradlebuild.basics.BuildParams.GRADLE_INSTALL_PATH
 import gradlebuild.basics.BuildParams.INCLUDE_PERFORMANCE_TEST_SCENARIOS
@@ -85,6 +86,7 @@ object BuildParams {
     const val BUILD_VCS_NUMBER = "BUILD_VCS_NUMBER"
     const val BUILD_VERSION_QUALIFIER = "versionQualifier"
     const val CI_ENVIRONMENT_VARIABLE = "CI"
+    const val DEFAULT_PERFORMANCE_BASELINES = "gradle.internal.default.performance.baselines"
     const val GRADLE_INSTALL_PATH = "gradle_installPath"
 
 
@@ -120,6 +122,7 @@ object BuildParams {
     const val AUTO_DOWNLOAD_ANDROID_STUDIO = "autoDownloadAndroidStudio"
     const val RUN_ANDROID_STUDIO_IN_HEADLESS_MODE = "runAndroidStudioInHeadlessMode"
     const val STUDIO_HOME = "studioHome"
+
     internal
     val VENDOR_MAPPING = mapOf("oracle" to JvmVendorSpec.ORACLE, "openjdk" to JvmVendorSpec.ADOPTIUM)
     const val YARNPKG_MIRROR_URL = "YARNPKG_MIRROR_URL"
@@ -215,6 +218,10 @@ val Project.buildTimestamp: Provider<String>
 
 val Project.buildVersionQualifier: Provider<String>
     get() = gradleProperty(BUILD_VERSION_QUALIFIER)
+
+
+val Project.defaultPerformanceBaselines: Provider<String>
+    get() = gradleProperty(DEFAULT_PERFORMANCE_BASELINES)
 
 
 val Project.flakyTestStrategy: FlakyTestStrategy

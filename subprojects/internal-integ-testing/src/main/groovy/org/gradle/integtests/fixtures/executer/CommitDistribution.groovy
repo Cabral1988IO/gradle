@@ -29,7 +29,7 @@ import org.gradle.util.GradleVersion
  * +-- intTestHomeDir
  *    +-- commit-distributions
  *        +-- gradle-7.5-commit-1a2b3c4.zip
- *        +-- gradle-tooling-api-7.5-commit-1a2b3c4.jar
+ *        +-- gradle-7.5-commit-1a2b3c4-tooling-api.jar
  *        \-- gradle-7.5-commit-1a2b3c4
  *            \-- gradle-7.5-20220618071843+0000
  *                +-- bin
@@ -64,6 +64,6 @@ class CommitDistribution extends DefaultGradleDistribution {
     }
 
     static File getToolingApiJar(String version) {
-        return IntegrationTestBuildContext.INSTANCE.getGradleUserHomeDir().parentFile.file("commit-distributions/gradle-tooling-api-${version}.jar")
+        return IntegrationTestBuildContext.INSTANCE.getGradleUserHomeDir().parentFile.file("commit-distributions/gradle-${version}-tooling-api.jar")
     }
 }

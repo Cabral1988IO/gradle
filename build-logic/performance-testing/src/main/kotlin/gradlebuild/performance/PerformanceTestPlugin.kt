@@ -92,7 +92,6 @@ object Config {
     const val performanceTestResultsJson = "performance-tests/$performanceTestResultsJsonName"
     const val androidStudioVersion = "2021.1.1.19"
     val defaultAndroidStudioJvmArgs = listOf("-Xms256m", "-Xmx4096m")
-    const val defaultBaseline = "7.6-commit-0778ab5"
 }
 
 
@@ -335,6 +334,8 @@ class PerformanceTestPlugin : Plugin<Project> {
             dependsOn(determineBaselines)
             releasedVersionsFile.set(project.releasedVersionsFile())
             commitBaseline.set(determineBaselines.flatMap { it.determinedBaselines })
+            commitDistribution.set(project.rootProject.layout.projectDirectory.file(commitBaseline.map { "intTestHomeDir/commit-distributions/gradle-$it.zip" }))
+            commitDistributionToolingApiJar.set(project.rootProject.layout.projectDirectory.file(commitBaseline.map { "intTestHomeDir/commit-distributions/gradle-$it-tooling-api.jar" }))
         }
 
         tasks.withType<PerformanceTest>().configureEach {

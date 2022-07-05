@@ -21,11 +21,6 @@ class BuildCommitBaselineDistribution(model: CIBuildModel, stage: Stage) : BaseG
         this,
         "performance:buildCommitDistribution"
     )
-
-    artifactRules = """
-            |intTestHomeDir/commit-distributions/gradle-*.zip => intTestHomeDir/commit-distributions
-            |intTestHomeDir/commit-distributions/gradle-tooling-api-*.jar => intTestHomeDir/commit-distributions
-            |""".trimMargin()
 }) {
     companion object {
         fun buildTypeId(model: CIBuildModel) = "${model.projectId}_BuildCommitBaselineDistribution"
