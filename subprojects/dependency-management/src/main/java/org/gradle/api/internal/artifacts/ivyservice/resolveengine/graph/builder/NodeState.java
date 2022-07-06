@@ -52,9 +52,7 @@ import org.gradle.internal.component.external.model.ShadowedCapability;
 import org.gradle.internal.component.external.model.VirtualComponentIdentifier;
 import org.gradle.internal.component.local.model.LocalConfigurationMetadata;
 import org.gradle.internal.component.local.model.LocalFileDependencyMetadata;
-import org.gradle.internal.component.model.ComponentGraphResolveMetadata;
 import org.gradle.internal.component.model.ComponentGraphResolveState;
-import org.gradle.internal.component.model.ConfigurationMetadata;
 import org.gradle.internal.component.model.DependencyMetadata;
 import org.gradle.internal.component.model.ExcludeMetadata;
 import org.gradle.internal.component.model.IvyArtifactName;
@@ -197,11 +195,6 @@ public class NodeState implements DependencyGraphNode {
     @Override
     public VariantGraphResolveMetadata getMetadata() {
         return metadata;
-    }
-
-    @Override
-    public ConfigurationMetadata getArtifactResolveMetadata() {
-        return metadata.getLegacyMetadata();
     }
 
     @Override
@@ -1347,8 +1340,8 @@ public class NodeState implements DependencyGraphNode {
         }
 
         @Override
-        public List<? extends VariantGraphResolveMetadata> selectVariants(ImmutableAttributes consumerAttributes, ComponentGraphResolveMetadata targetComponent, AttributesSchemaInternal consumerSchema, Collection<? extends Capability> explicitRequestedCapabilities) {
-            return dependencyMetadata.selectVariants(consumerAttributes, targetComponent, consumerSchema, explicitRequestedCapabilities);
+        public List<? extends VariantGraphResolveMetadata> selectVariants(ImmutableAttributes consumerAttributes, ComponentGraphResolveState targetComponentState, AttributesSchemaInternal consumerSchema, Collection<? extends Capability> explicitRequestedCapabilities) {
+            return dependencyMetadata.selectVariants(consumerAttributes, targetComponentState, consumerSchema, explicitRequestedCapabilities);
         }
 
         @Override

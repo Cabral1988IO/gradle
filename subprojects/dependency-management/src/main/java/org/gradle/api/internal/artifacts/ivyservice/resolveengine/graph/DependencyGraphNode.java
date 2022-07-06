@@ -53,8 +53,6 @@ public interface DependencyGraphNode {
 
     VariantGraphResolveMetadata getMetadata();
 
-    ConfigurationMetadata getArtifactResolveMetadata();
-
     boolean isSelected();
 
     ComponentResolutionState getComponent();

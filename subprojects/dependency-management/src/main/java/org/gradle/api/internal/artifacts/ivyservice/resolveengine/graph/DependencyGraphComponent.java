@@ -36,7 +36,6 @@ public interface DependencyGraphComponent extends ResolvedGraphComponent {
     @Nullable
     ComponentGraphResolveMetadata getMetadata();
 
-    @Nullable
     ComponentResolveMetadata getArtifactResolveMetadata();
 
     Collection<? extends DependencyGraphComponent> getDependents();

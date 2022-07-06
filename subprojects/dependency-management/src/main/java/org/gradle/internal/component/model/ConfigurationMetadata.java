@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public interface ConfigurationMetadata extends ConfigurationGraphResolveMetadata {
+public interface ConfigurationMetadata extends ConfigurationGraphResolveMetadata, VariantArtifactsGraphResolveMetadata {
     @Override
     default ConfigurationMetadata getLegacyMetadata() {
         return this;

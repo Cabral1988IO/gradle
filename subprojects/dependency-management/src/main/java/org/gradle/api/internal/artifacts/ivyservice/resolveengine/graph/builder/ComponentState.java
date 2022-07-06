@@ -162,15 +162,10 @@ public class ComponentState implements ComponentResolutionState, DependencyGraph
         }
     }
 
-    @Nullable
     @Override
     public ComponentResolveMetadata getArtifactResolveMetadata() {
         resolve();
-        if (resolveState == null) {
-            return null;
-        } else {
-            return resolveState.getArtifactResolveMetadata();
-        }
+        return resolveState.getArtifactResolveMetadata();
     }
 
     public ComponentGraphResolveMetadata getResolvedMetadata() {
@@ -178,8 +173,15 @@ public class ComponentState implements ComponentResolutionState, DependencyGraph
         return resolveState.getMetadata();
     }
 
+    @Nullable
+    public ComponentGraphResolveState getResolveStateOrNull() {
+        resolve();
+        return resolveState;
+    }
+
     public ComponentGraphResolveState getResolveState() {
         resolve();
+        assert resolveState != null;
         return resolveState;
     }
 

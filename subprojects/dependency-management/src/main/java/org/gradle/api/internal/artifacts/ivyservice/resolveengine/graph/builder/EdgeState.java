@@ -29,7 +29,7 @@ import org.gradle.api.internal.attributes.AttributeMergingException;
 import org.gradle.api.internal.attributes.ImmutableAttributes;
 import org.gradle.internal.component.local.model.DslOriginDependencyMetadata;
 import org.gradle.internal.component.model.ComponentArtifactMetadata;
-import org.gradle.internal.component.model.ComponentGraphResolveMetadata;
+import org.gradle.internal.component.model.ComponentGraphResolveState;
 import org.gradle.internal.component.model.ConfigurationMetadata;
 import org.gradle.internal.component.model.DependencyMetadata;
 import org.gradle.internal.component.model.ExcludeMetadata;
@@ -219,10 +219,10 @@ class EdgeState implements DependencyGraphEdge {
     }
 
     private void calculateTargetConfigurations(ComponentState targetComponent) {
-        ComponentGraphResolveMetadata targetModuleVersion = targetComponent.getMetadata();
+        ComponentGraphResolveState targetComponentState = targetComponent.getResolveStateOrNull();
         targetNodes.clear();
         targetNodeSelectionFailure = null;
-        if (targetModuleVersion == null) {
+        if (targetComponentState == null) {
             targetComponent.getModule().getPlatformState().addOrphanEdge(this);
             // Broken version
             return;
@@ -263,7 +263,7 @@ class EdgeState implements DependencyGraphEdge {
         try {
             ImmutableAttributes attributes = resolveState.getRoot().getMetadata().getAttributes();
             attributes = resolveState.getAttributesFactory().concat(attributes, safeGetAttributes());
-            targetVariants = dependencyMetadata.selectVariants(attributes, targetModuleVersion, resolveState.getAttributesSchema(), dependencyState.getDependency().getSelector().getRequestedCapabilities());
+            targetVariants = dependencyMetadata.selectVariants(attributes, targetComponentState, resolveState.getAttributesSchema(), dependencyState.getDependency().getSelector().getRequestedCapabilities());
         } catch (AttributeMergingException mergeError) {
             targetNodeSelectionFailure = new ModuleVersionResolveException(dependencyState.getRequested(), () -> {
                 Attribute<?> attribute = mergeError.getAttribute();
