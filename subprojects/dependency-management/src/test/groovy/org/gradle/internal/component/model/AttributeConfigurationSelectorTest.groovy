@@ -477,6 +477,7 @@ All of them match the consumer attributes:
                     ImmutableList.copyOf(variants)
             )
             getAttributesSchema() >> attributesSchema
+            resolveArtifactsFor(_) >> { VariantGraphResolveMetadata variant -> variant }
         }
     }
 
