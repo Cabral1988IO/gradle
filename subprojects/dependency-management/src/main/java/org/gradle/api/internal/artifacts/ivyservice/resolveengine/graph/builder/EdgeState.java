@@ -35,6 +35,7 @@ import org.gradle.internal.component.model.DependencyMetadata;
 import org.gradle.internal.component.model.ExcludeMetadata;
 import org.gradle.internal.component.model.IvyArtifactName;
 import org.gradle.internal.component.model.VariantGraphResolveMetadata;
+import org.gradle.internal.component.model.VariantSelectionResult;
 import org.gradle.internal.resolve.ModuleVersionResolveException;
 
 import javax.annotation.Nullable;
@@ -259,7 +260,7 @@ class EdgeState implements DependencyGraphEdge {
             return;
         }
 
-        List<? extends VariantGraphResolveMetadata> targetVariants;
+        VariantSelectionResult targetVariants;
         try {
             ImmutableAttributes attributes = resolveState.getRoot().getMetadata().getAttributes();
             attributes = resolveState.getAttributesFactory().concat(attributes, safeGetAttributes());
@@ -277,8 +278,8 @@ class EdgeState implements DependencyGraphEdge {
             targetNodeSelectionFailure = new ModuleVersionResolveException(dependencyState.getRequested(), t);
             return;
         }
-        for (VariantGraphResolveMetadata targetVariant : targetVariants) {
-            NodeState targetNodeState = resolveState.getNode(targetComponent, targetVariant);
+        for (VariantGraphResolveMetadata targetVariant : targetVariants.getVariants()) {
+            NodeState targetNodeState = resolveState.getNode(targetComponent, targetVariant, targetVariants.isSelectedByVariantAwareResolution());
             this.targetNodes.add(targetNodeState);
         }
     }

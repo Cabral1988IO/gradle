@@ -47,11 +47,11 @@ import java.util.Set;
 
 public abstract class AttributeConfigurationSelector {
 
-    public static VariantGraphResolveMetadata selectVariantsUsingAttributeMatching(ImmutableAttributes consumerAttributes, Collection<? extends Capability> explicitRequestedCapabilities, ComponentGraphResolveState targetComponentState, AttributesSchemaInternal consumerSchema, List<IvyArtifactName> requestedArtifacts) {
+    public static VariantSelectionResult selectVariantsUsingAttributeMatching(ImmutableAttributes consumerAttributes, Collection<? extends Capability> explicitRequestedCapabilities, ComponentGraphResolveState targetComponentState, AttributesSchemaInternal consumerSchema, List<IvyArtifactName> requestedArtifacts) {
         return selectVariantsUsingAttributeMatching(consumerAttributes, explicitRequestedCapabilities, targetComponentState, consumerSchema, requestedArtifacts, AttributeMatchingExplanationBuilder.logging());
     }
 
-    private static VariantGraphResolveMetadata selectVariantsUsingAttributeMatching(ImmutableAttributes consumerAttributes, Collection<? extends Capability> explicitRequestedCapabilities, ComponentGraphResolveState targetComponentState, AttributesSchemaInternal consumerSchema, List<IvyArtifactName> requestedArtifacts, AttributeMatchingExplanationBuilder explanationBuilder) {
+    private static VariantSelectionResult selectVariantsUsingAttributeMatching(ImmutableAttributes consumerAttributes, Collection<? extends Capability> explicitRequestedCapabilities, ComponentGraphResolveState targetComponentState, AttributesSchemaInternal consumerSchema, List<IvyArtifactName> requestedArtifacts, AttributeMatchingExplanationBuilder explanationBuilder) {
         ComponentGraphResolveMetadata targetComponent = targetComponentState.getMetadata();
         Optional<List<? extends VariantGraphResolveMetadata>> variantsForGraphTraversal = targetComponent.getVariantsForGraphTraversal();
         List<? extends VariantGraphResolveMetadata> consumableVariants = variantsForGraphTraversal.or(ImmutableList.of());
@@ -137,12 +137,8 @@ public abstract class AttributeConfigurationSelector {
         return sameClassifier;
     }
 
-    private static VariantGraphResolveMetadata singleVariant(Optional<List<? extends VariantGraphResolveMetadata>> variantsForGraphTraversal, List<VariantGraphResolveMetadata> matches) {
-        VariantGraphResolveMetadata match = matches.get(0);
-        if (variantsForGraphTraversal.isPresent()) {
-            return SelectedByVariantMatchingConfigurationMetadata.of(match.getLegacyMetadata());
-        }
-        return match;
+    private static VariantSelectionResult singleVariant(Optional<List<? extends VariantGraphResolveMetadata>> variantsForGraphTraversal, List<VariantGraphResolveMetadata> matches) {
+        return new VariantSelectionResult(ImmutableList.of(matches.get(0)), variantsForGraphTraversal.isPresent());
     }
 
     private static ImmutableList<VariantGraphResolveMetadata> filterVariantsByRequestedCapabilities(ComponentGraphResolveMetadata targetComponent, Collection<? extends Capability> explicitRequestedCapabilities, Collection<? extends VariantGraphResolveMetadata> consumableVariants, String group, String name, boolean lenient) {

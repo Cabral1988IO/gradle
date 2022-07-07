@@ -35,6 +35,7 @@ import org.gradle.internal.component.model.ConfigurationNotFoundException;
 import org.gradle.internal.component.model.Exclude;
 import org.gradle.internal.component.model.ExcludeMetadata;
 import org.gradle.internal.component.model.IvyArtifactName;
+import org.gradle.internal.component.model.VariantSelectionResult;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -124,7 +125,7 @@ public class IvyDependencyDescriptor extends ExternalDependencyDescriptor {
      *   - '@' and '#' are special values for matching target configurations. See <a href="http://ant.apache.org/ivy/history/latest-milestone/ivyfile/dependency.html">the Ivy docs</a> for details.
      */
     @Override
-    public List<ConfigurationGraphResolveMetadata> selectLegacyConfigurations(ComponentIdentifier fromComponent, ConfigurationMetadata fromConfiguration, ComponentGraphResolveState targetComponentState) {
+    public VariantSelectionResult selectLegacyConfigurations(ComponentIdentifier fromComponent, ConfigurationMetadata fromConfiguration, ComponentGraphResolveState targetComponentState) {
         ComponentGraphResolveMetadata targetComponent = targetComponentState.getMetadata();
         // TODO - all this matching stuff is constant for a given DependencyMetadata instance
         List<ConfigurationGraphResolveMetadata> targets = Lists.newLinkedList();
@@ -164,7 +165,7 @@ public class IvyDependencyDescriptor extends ExternalDependencyDescriptor {
             }
         }
 
-        return targets;
+        return new VariantSelectionResult(ImmutableList.copyOf(targets), false);
     }
 
     private void findMatches(ComponentIdentifier fromComponent, ComponentGraphResolveMetadata targetComponent, String fromConfiguration, String patternConfiguration, String targetPattern, List<ConfigurationGraphResolveMetadata> targetConfigurations) {

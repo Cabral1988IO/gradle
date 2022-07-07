@@ -46,6 +46,4 @@ public interface VariantGraphResolveMetadata extends HasAttributes {
     boolean isTransitive();
 
     boolean isExternalVariant();
-
-    ConfigurationMetadata getLegacyMetadata();
 }

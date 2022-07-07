@@ -29,6 +29,7 @@ import org.gradle.internal.component.model.ConfigurationMetadata;
 import org.gradle.internal.component.model.ConfigurationNotFoundException;
 import org.gradle.internal.component.model.ExcludeMetadata;
 import org.gradle.internal.component.model.IvyArtifactName;
+import org.gradle.internal.component.model.VariantSelectionResult;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -83,7 +84,7 @@ public class MavenDependencyDescriptor extends ExternalDependencyDescriptor {
      *    - Always include 'master' if it exists, and it has dependencies and/or artifacts.
      */
     @Override
-    public List<ConfigurationGraphResolveMetadata> selectLegacyConfigurations(ComponentIdentifier fromComponent, ConfigurationMetadata fromConfiguration, ComponentGraphResolveState targetComponentState) {
+    public VariantSelectionResult selectLegacyConfigurations(ComponentIdentifier fromComponent, ConfigurationMetadata fromConfiguration, ComponentGraphResolveState targetComponentState) {
         ComponentGraphResolveMetadata targetComponent = targetComponentState.getMetadata();
         ImmutableList.Builder<ConfigurationGraphResolveMetadata> result = ImmutableList.builder();
         boolean requiresCompile = fromConfiguration.getName().equals("compile");
@@ -101,7 +102,7 @@ public class MavenDependencyDescriptor extends ExternalDependencyDescriptor {
         if (master != null && (!master.getDependencies().isEmpty() || !targetComponentState.resolveArtifactsFor(master).getArtifacts().isEmpty())) {
             result.add(master);
         }
-        return result.build();
+        return new VariantSelectionResult(result.build(), false);
     }
 
     private ConfigurationGraphResolveMetadata findTargetConfiguration(ComponentIdentifier fromComponentId, ConfigurationMetadata fromConfiguration, ComponentGraphResolveMetadata targetComponent, String target) {
