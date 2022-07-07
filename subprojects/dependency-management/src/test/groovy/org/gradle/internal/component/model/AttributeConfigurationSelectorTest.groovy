@@ -436,7 +436,7 @@ All of them match the consumer attributes:
                 targetComponent,
                 attributesSchema,
                 artifacts
-        )
+        ).variants[0]
     }
 
     private void requireArtifact(String name = "foo", String type = "jar", String ext = "jar", String classifier = null) {
