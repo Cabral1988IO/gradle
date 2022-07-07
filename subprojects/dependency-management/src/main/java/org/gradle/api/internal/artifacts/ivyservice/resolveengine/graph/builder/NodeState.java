@@ -592,13 +592,13 @@ public class NodeState implements DependencyGraphNode {
         PotentialEdge potentialEdge = PotentialEdge.of(resolveState, this, platformComponentIdentifier, platformSelector, platformComponentIdentifier);
         ComponentGraphResolveState state = potentialEdge.state;
         VirtualPlatformState virtualPlatformState = null;
-        if (state == null || state instanceof LenientPlatformResolveMetadata) {
+        if (state == null || state instanceof LenientPlatformGraphResolveState) {
             virtualPlatformState = potentialEdge.component.getModule().getPlatformState();
             virtualPlatformState.participatingModule(component.getModule());
         }
         if (state == null) {
             // the platform doesn't exist, so we're building a lenient one
-            state = new LenientPlatformResolveMetadata(platformComponentIdentifier, potentialEdge.toModuleVersionId, virtualPlatformState, this, resolveState);
+            state = new LenientPlatformGraphResolveState(platformComponentIdentifier, potentialEdge.toModuleVersionId, virtualPlatformState, this, resolveState);
             potentialEdge.component.setState(state);
             // And now let's make sure we do not have another version of that virtual platform missing its metadata
             potentialEdge.component.getModule().maybeCreateVirtualMetadata(resolveState);
