@@ -34,7 +34,7 @@ public interface DependencyGraphComponent extends ResolvedGraphComponent {
      * @return null if the meta-data is not available due to some failure.
      */
     @Nullable
-    ComponentGraphResolveMetadata getMetadata();
+    ComponentGraphResolveMetadata getMetadataOrNull();
 
     ComponentResolveMetadata getArtifactResolveMetadata();
 
