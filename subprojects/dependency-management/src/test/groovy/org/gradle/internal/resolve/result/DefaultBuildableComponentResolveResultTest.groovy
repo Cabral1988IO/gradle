@@ -45,7 +45,7 @@ class DefaultBuildableComponentResolveResultTest extends Specification {
 
         then:
         result.moduleVersionId == id
-        result.state == metadata
+        result.state == state
     }
 
     def "can query id and metadata when resolved from metadata"() {

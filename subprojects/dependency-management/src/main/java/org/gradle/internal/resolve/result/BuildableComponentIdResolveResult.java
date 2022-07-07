@@ -16,7 +16,6 @@
 
 package org.gradle.internal.resolve.result;
 
-import org.gradle.api.artifacts.ComponentMetadata;
 import org.gradle.api.artifacts.ModuleVersionIdentifier;
 import org.gradle.api.artifacts.component.ComponentIdentifier;
 import org.gradle.internal.component.model.ComponentGraphResolveState;
